@@ -1307,18 +1307,19 @@ def main():
                     st.warning("⚠️ Recalculez PCA, FST, Admixture, GWAS… sur le jeu filtré.")
 
         with tabs[1]:
-        if st.session_state.gt_filt is not None and st.button("▶ LD Pruning", key="ld_btn"):
-            k = ld_pruning(st.session_state.gt_filt, r2=ld_r2)
-            st.session_state.gt_pruned = st.session_state.gt_filt[:, k]
-            st.session_state.snp_pruned = st.session_state.snp_filt[k].reset_index(drop=True)
-            st.session_state.ld_df = ld_decay(st.session_state.gt_filt, st.session_state.snp_filt)
-            st.success(f"✅ {st.session_state.gt_pruned.shape[1]} SNPs après pruning")
-        if st.session_state.gt_pruned is not None:
-            c1, c2 = st.columns(2)
-            c1.metric("SNPs avant", st.session_state.gt_filt.shape[1])
-            c2.metric("SNPs après", st.session_state.gt_pruned.shape[1])
-            if st.session_state.ld_df is not None and not st.session_state.ld_df.empty:
-                st.plotly_chart(plot_ld(st.session_state.ld_df), use_container_width=True, key="ld_plot")
+    if st.session_state.gt_filt is not None and st.button("▶ LD Pruning", key="ld_btn"):
+        k = ld_pruning(st.session_state.gt_filt, r2=ld_r2)
+        st.session_state.gt_pruned = st.session_state.gt_filt[:, k]
+        st.session_state.snp_pruned = st.session_state.snp_filt[k].reset_index(drop=True)
+        st.session_state.ld_df = ld_decay(st.session_state.gt_filt, st.session_state.snp_filt)
+        st.success(f"✅ {st.session_state.gt_pruned.shape[1]} SNPs après pruning")
+    if st.session_state.gt_pruned is not None:
+        c1, c2 = st.columns(2)
+        c1.metric("SNPs avant", st.session_state.gt_filt.shape[1])
+        c2.metric("SNPs après", st.session_state.gt_pruned.shape[1])
+        if st.session_state.ld_df is not None and not st.session_state.ld_df.empty:
+            st.plotly_chart(plot_ld(st.session_state.ld_df),
+                            use_container_width=True, key="ld_plot")
 
     with tabs[2]:
         if st.session_state.gt_filt is not None:
